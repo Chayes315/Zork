@@ -6,7 +6,7 @@ namespace Zork
 {
     internal class Program
     {
-        private static (int Row, int Column) Location = (0, 1);
+        private static (int Row, int Column) Location = (1, 1);
 
         private static string CurrentRoom
         {
@@ -60,6 +60,14 @@ namespace Zork
             bool valid = true;
             switch (command)
             {
+                case Commands.NORTH when Location.Row < Rooms.GetLength(0) - 1:
+                    Location.Row++;
+                    break;
+
+                case Commands.SOUTH when Location.Row > 0:
+                    Location.Row--;
+                    break;
+
                 case Commands.EAST when Location.Column < Rooms.GetLength(1) - 1:
                     Location.Column++;
                     break;
@@ -75,17 +83,19 @@ namespace Zork
             return valid;
         }
 
-        private static Commands ToCommand(string commandString) => Enum.TryParse
-            (commandString, true, out Commands result) ? result : Commands.UNKNOWN;
+        private static Commands ToCommand(string commandString) =>
+             Enum.TryParse(commandString, true, out Commands result)
+                ? result : Commands.UNKNOWN;
 
         private static readonly string[,] Rooms =
         {
-            {"Forest", "West of House", "Behind House", "Clearing", "Canyon View"},
+            {"RockyTrail", "South of House", "Canyon View"},
+            {"Forest", "West of House", "Behind House" },
+            {"Dense Woods", "North of House", "Clearing" }
         };
 
         private static readonly List<Commands> Directions = new List<Commands>
-        {
-          Commands.NORTH,
+        { Commands.NORTH,
           Commands.SOUTH,
           Commands.EAST,
           Commands.WEST
