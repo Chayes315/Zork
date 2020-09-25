@@ -8,14 +8,6 @@ namespace Zork
     {
         private static (int Row, int Column) Location = (1, 1);
 
-        private static string CurrentRoom
-        {
-            get
-            {
-                return Rooms[Location.Row, Location.Column];
-            }
-        }
-
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Zork!");
@@ -34,7 +26,8 @@ namespace Zork
                         break;
 
                     case Commands.LOOK:
-                        Console.WriteLine("A rubber mat saying 'Welcome to Zork!' lies by the door.");
+                        Console.WriteLine("A rubber mat saying 'Welcome to Zork!' " +
+                            "lies by the door.");
                         break;
 
                     case Commands.NORTH:
@@ -53,9 +46,9 @@ namespace Zork
                 }
             }
         }
-
         private static bool Move(Commands command)
         {
+            Assert.IsTrue(IsDirection(command), "Invalid direction.");
 
             bool valid = true;
             switch (command)
@@ -83,9 +76,20 @@ namespace Zork
             return valid;
         }
 
+        private static string CurrentRoom
+        {
+            get
+            {
+                return Rooms[Location.Row, Location.Column];
+            }
+        }
+
         private static Commands ToCommand(string commandString) =>
              Enum.TryParse(commandString, true, out Commands result)
                 ? result : Commands.UNKNOWN;
+
+        private static bool IsDirection(Commands command)
+            => Directions.Contains(command);
 
         private static readonly string[,] Rooms =
         {
@@ -95,7 +99,8 @@ namespace Zork
         };
 
         private static readonly List<Commands> Directions = new List<Commands>
-        { Commands.NORTH,
+        {
+          Commands.NORTH,
           Commands.SOUTH,
           Commands.EAST,
           Commands.WEST
